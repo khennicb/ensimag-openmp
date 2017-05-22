@@ -1,0 +1,6 @@
+*~
+*.o
+mandel
+mandel_seq
+fibo
+fibo_seq
