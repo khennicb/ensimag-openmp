@@ -5,7 +5,7 @@
 
 uint64_t fibo(uint64_t n) {
 	if (n < 2) {
-		return 1;
+		return n;
 	}
 	uint64_t n1;
 	uint64_t n2;
