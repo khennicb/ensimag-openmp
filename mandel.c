@@ -5,7 +5,7 @@
 #include <complex.h>
 
 
-#define MAXITER 800
+static int MAXITER;
 #define XRANGE 3840
 #define YRANGE 2160
 
@@ -30,7 +30,8 @@ uint32_t escape(double x, double y) {
 }
 
 int main(int argc, char **argv) {
-
+	assert(argc == 2);
+	MAXITER=atoi(argv[1]);
 	image = malloc( XRANGE * YRANGE * sizeof(uint32_t) );
 
 	for(int i=0; i < XRANGE; i++) 
