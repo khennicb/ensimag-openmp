@@ -34,19 +34,22 @@ int main(int argc, char **argv) {
 	image = malloc( XRANGE * YRANGE * sizeof(uint32_t) );
 	uint64_t somme;
 	{
-		#pragma omp parallel for 
+		#pragma omp parallel for schedule(dynamic, 50)
 		for(int i=0; i < XRANGE; i++) {
+
+			//#pragma omp parallel for shared(somme) 
 			for(int j=0; j < YRANGE; j++) {
 				double x = XMIN + i * (XMAX-XMIN)/(double)XRANGE;
 				double y = YMIN + j * (YMAX-YMIN)/(double)YRANGE;
 				image[i + j*XRANGE] = escape(x,y);
 			}
 		}
+		//printf("middle\n");
 		somme=0;
 		
-		#pragma omp parallel for shared(somme)
-		for(int i=0; i < XRANGE; i++) {
-			for(int j=0; j < YRANGE; j++) {
+		for(int j=0; j < YRANGE; j++) {
+			#pragma omp parrallel for reduction(+ : somme) 
+			for(int i=0; i < XRANGE; i++) {
 				somme += image[i + j *XRANGE];
 			}
 		}
