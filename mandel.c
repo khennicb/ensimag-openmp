@@ -34,18 +34,24 @@ int main(int argc, char **argv) {
 	MAXITER=atoi(argv[1]);
 	image = malloc( XRANGE * YRANGE * sizeof(uint32_t) );
 
-	for(int i=0; i < XRANGE; i++) 
+	#pragma omp for
+	for(int i=0; i < XRANGE; i++) {
+
 		for(int j=0; j < YRANGE; j++) {
 			double x = XMIN + i * (XMAX-XMIN)/(double)XRANGE;
 			double y = YMIN + j * (YMAX-YMIN)/(double)YRANGE;
 			image[i + j*XRANGE] = escape(x,y);
 		}
+	}
 
 	uint64_t somme=0;
-	for(int i=0; i < XRANGE; i++) 
+	
+	#pragma omp for
+	for(int i=0; i < XRANGE; i++) {
 		for(int j=0; j < YRANGE; j++) {
 			somme += image[i + j *XRANGE];
 		}
+	}
 
 	printf("somme %lld\n", somme);
 }
