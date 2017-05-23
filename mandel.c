@@ -34,20 +34,18 @@ int main(int argc, char **argv) {
 	MAXITER=atoi(argv[1]);
 	image = malloc( XRANGE * YRANGE * sizeof(uint32_t) );
 	uint64_t somme;
-	#pragma omp parallel shared(somme)
 	{
-		#pragma omp for nowait 
 		for(int i=0; i < XRANGE; i++) {
 
+			#pragma omp parallel for shared(somme) 
 			for(int j=0; j < YRANGE; j++) {
 				double x = XMIN + i * (XMAX-XMIN)/(double)XRANGE;
 				double y = YMIN + j * (YMAX-YMIN)/(double)YRANGE;
 				image[i + j*XRANGE] = escape(x,y);
 			}
 		}
-
+		printf("middle\n");
 		somme=0;
-		#pragma omp barrier
 		
 		#pragma omp for nowait 
 		for(int i=0; i < XRANGE; i++) {
@@ -55,6 +53,7 @@ int main(int argc, char **argv) {
 				somme += image[i + j *XRANGE];
 			}
 		}
+		printf("end\n");
 	}
 	printf("somme %lld\n", somme);
 }
