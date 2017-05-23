@@ -21,7 +21,6 @@ uint32_t escape(double x, double y) {
 	double complex z= 0.0;
 
 	int iter=0;
-	
 	while(abs(z) < 2.0 && iter < MAXITER) {
 		z = z * z + c;
 		iter ++;
@@ -35,25 +34,22 @@ int main(int argc, char **argv) {
 	image = malloc( XRANGE * YRANGE * sizeof(uint32_t) );
 	uint64_t somme;
 	{
+		#pragma omp parallel for 
 		for(int i=0; i < XRANGE; i++) {
-
-			#pragma omp parallel for shared(somme) 
 			for(int j=0; j < YRANGE; j++) {
 				double x = XMIN + i * (XMAX-XMIN)/(double)XRANGE;
 				double y = YMIN + j * (YMAX-YMIN)/(double)YRANGE;
 				image[i + j*XRANGE] = escape(x,y);
 			}
 		}
-		printf("middle\n");
 		somme=0;
 		
-		#pragma omp for nowait 
+		#pragma omp parallel for shared(somme)
 		for(int i=0; i < XRANGE; i++) {
 			for(int j=0; j < YRANGE; j++) {
 				somme += image[i + j *XRANGE];
 			}
 		}
-		printf("end\n");
 	}
 	printf("somme %lld\n", somme);
 }
