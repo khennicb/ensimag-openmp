@@ -1,4 +1,4 @@
-
+CC=/opt/gcc-6.1.0/bin/gcc
 
 all: fibo fibo_seq mandel mandel_seq
 
